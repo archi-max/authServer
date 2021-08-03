@@ -13,11 +13,12 @@ import os
 # Create your views here.
 
 password = os.getenv("PASSWORD")
-
+print("pass: ",password)
 
 
 def get_time():
-    curr_time = str(int(ntplib.NTPClient().request('time1.google.com', version=3).tx_time))
+    curr_time = str(int(ntplib.NTPClient().request('time.google.com', version=3).tx_time))
+    print(curr_time[:-2]+"00"+password)
     return curr_time[:-2]+"00"
 
 def decrypt(data):
@@ -34,7 +35,7 @@ def activity(request):
 
         return HttpResponseNotAllowed(["GET"])
     try:
-        data = json.loads(decrypt(request.body)).decode("utf-8")
+        data = json.loads(decrypt(request.body).decode("utf-8"))
     except InvalidTokenError:
         response = {"error": "Invalid Request"}
         return HttpResponse(encrypt(json.dumps(response)))
